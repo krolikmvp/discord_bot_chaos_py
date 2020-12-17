@@ -1,32 +1,30 @@
 import os
 import discord
 import json
-from discord.ext import commands
 import argparse
+from discord.ext import commands
+from utils.load_cogs import cogs
+from utils.load_config import TOKEN, GUILD,COMMANDS_PREFIX
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m','--show_members', action='store_true', default=False, help='Shows members of your guild (config.json)')
-
 args = parser.parse_args()
 
 intents = discord.Intents.default()
 intents.members = True
 
-
-## Read config file
-config = None
-with open('./config.json') as cfg:
-    config = json.load(cfg)
-TOKEN = config['token']
-GUILD = config['guild']
+bot = commands.Bot(command_prefix=COMMANDS_PREFIX, intents=intents)
 
 
-bot = commands.Bot(command_prefix='!', intents=intents)
-
-
-# ## List all servers where the bot is present 
 @bot.event
 async def on_ready():
+    # Load all cogs
+    for cog in cogs:
+        try:
+            bot.load_extension(cog)
+        except Exception:
+            print(f'Couldn\'t load cog {cog}')
+    # List all servers where the bot is present 
     f'{bot.user} is connected to the following guilds:\n'
     for guild in bot.guilds:
         print("Guild:")
@@ -39,6 +37,7 @@ async def on_ready():
                 name, id = member.name, member.id
                 print('{} (id: {})'.format(name, str(id)))
 
+# Main message handle function. Message is further processed in cog classes
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -46,8 +45,7 @@ async def on_message(message):
     if isinstance(message.channel, discord.DMChannel):
         await message.author.send('Sorry, but I don\'t accept commands through direct messages!')
         return
-    if bot.dev and not await bot.is_owner(message.author):
-        return
     await bot.process_commands(message)
+
 
 bot.run(TOKEN)
