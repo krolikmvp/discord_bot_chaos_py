@@ -131,8 +131,11 @@ dmypy.json
 # Config file
 config.json
 
-# Log file 
-*.txt
-
 #  sqlite3 database
 *.sqlite
+
+# quote dumps
+*dump.txt
+
+# Plot file
+*.png

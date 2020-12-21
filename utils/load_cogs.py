@@ -2,6 +2,6 @@
 
 # List of available cogs
 cogs = [
-    'cogs.quote'
-
+    'cogs.quote',
+    'cogs.stats'
 ]

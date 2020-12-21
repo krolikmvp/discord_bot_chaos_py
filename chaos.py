@@ -7,16 +7,28 @@ from discord.ext import commands
 from utils.load_cogs import cogs
 from utils.load_config import TOKEN, GUILD,COMMANDS_PREFIX, DATABASE_NAME
 import logging
-
+from logging.handlers import RotatingFileHandler
 
 # logger, parser and bot config
-logging.basicConfig(filename='logfile.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 parser = argparse.ArgumentParser()
 parser.add_argument('-m','--show_members', action='store_true', default=False, help='Shows members of your guild (config.json)')
+parser.add_argument('-d','--debug', action='store_true', default=False, help='Runs bot with debug loggin on')
 args = parser.parse_args()
+
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=COMMANDS_PREFIX, intents=intents)
+
+log_level = logging.INFO if not args.debug else logging.DEBUG
+log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(line: %(lineno)d) %(message)s')
+logFile = 'logfile.log'
+my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
+                                 backupCount=2, encoding=None, delay=0)
+my_handler.setFormatter(log_formatter)
+my_handler.setLevel(log_level)
+chaos_log = logging.getLogger('chaos_logger')
+chaos_log.setLevel(log_level)
+chaos_log.addHandler(my_handler)
 
 
 @bot.event
@@ -27,7 +39,7 @@ async def on_ready():
             bot.load_extension(cog)
         except Exception:
             print(f'Could not load cog {cog}')
-            logging.error(f'Could not load cog {cog}')
+            chaos_log.error(f'Could not load cog {cog}')
     # List all servers where the bot is present 
     f'{bot.user} is connected to the following guilds:\n'
     for guild in bot.guilds:
@@ -53,7 +65,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 def _setupDatabase(db):
-    logging.info("Creating database columns")
+    chaos_log.info("Creating database columns")
     with sqlite3.connect(db) as con:
         c = con.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS `quotes` (
