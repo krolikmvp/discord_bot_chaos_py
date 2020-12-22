@@ -69,10 +69,11 @@ def _setupDatabase(db):
     with sqlite3.connect(db) as con:
         c = con.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS `quotes` (
-                    	`id`	INTEGER PRIMARY KEY,
+                    	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
                     	`quote`	TEXT NOT NULL,
                     	`time`	TEXT NOT NULL,
-                        `author`    TEXT NOT NULL
+                        `author`    TEXT NOT NULL,
+                        `author_id`    INTEGER NOT NULL
                     );''')
         c.execute('''CREATE TABLE IF NOT EXISTS `stats` (
                     	`author`	TEXT NOT NULL,
