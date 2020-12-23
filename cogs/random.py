@@ -1,13 +1,6 @@
-import os
-import asyncio
-import aiohttp
-import discord
 from discord.ext import commands
 from discord import Embed
 import logging
-from utils.load_config import QUOTE_AUTHORS_NAMES, DATABASE_NAME, COMMANDS_PREFIX, OWNER_ID, RANDOM_QUOTE_CUSTOM_NAME
-import datetime
-import sqlite3
 import random
 
 
@@ -36,15 +29,15 @@ class Random(commands.Cog):
         team2 = "\n".join(channel_member_names[team_size:])
         
         embed = Embed(
-            colour = 12331111,
-            title = ' '
+            colour=12331111,
+            title=' '
         )
 
         self.logging.info("Team1 rolled: {team1} ")
         self.logging.info("Team2 rolled: {team2} ")
-        embed.add_field(name = 'Team 1:', value =  team1)
-        embed.add_field(name = 'Team 2:', value =  team2)
-        await ctx.send(embed = embed)
+        embed.add_field(name='Team 1:', value=team1)
+        embed.add_field(name='Team 2:', value=team2)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

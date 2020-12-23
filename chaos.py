@@ -1,6 +1,4 @@
-import os
 import discord
-import json
 import argparse
 import sqlite3
 from discord.ext import commands
@@ -11,8 +9,9 @@ from logging.handlers import RotatingFileHandler
 
 # logger, parser and bot config
 parser = argparse.ArgumentParser()
-parser.add_argument('-m','--show_members', action='store_true', default=False, help='Shows members of your guild (config.json)')
-parser.add_argument('-d','--debug', action='store_true', default=False, help='Runs bot with debug loggin on')
+parser.add_argument('-m', '--show_members', action='store_true', default=False,
+                    help='Shows members of your guild (config.json)')
+parser.add_argument('-d', '--debug', action='store_true', default=False, help='Runs bot with debug loggin on')
 args = parser.parse_args()
 
 intents = discord.Intents.default()
@@ -37,7 +36,7 @@ async def on_ready():
     for cog in cogs:
         try:
             bot.load_extension(cog)
-        except Exception:
+        except Exception as ex:
             print(f'Could not load cog {cog}')
             chaos_log.error(f'Could not load cog {cog}')
     # List all servers where the bot is present 
@@ -50,9 +49,10 @@ async def on_ready():
         if guild.name == GUILD and args.show_members:
             print('Guild Members:')
             for member in guild.members:
-                name, id = member.name, member.id
-                print(f'{name} (id: {str(id)})')
-    _setupDatabase(DATABASE_NAME)
+                name, id_ = member.name, member.id
+                print(f'{name} (id: {str(id_)})')
+    setup_database(DATABASE_NAME)
+
 
 # Main message handle function. Message is further processed in cog classes
 @bot.event
@@ -64,26 +64,28 @@ async def on_message(message):
         return
     await bot.process_commands(message)
 
-def _setupDatabase(db):
+
+def setup_database(db):
     chaos_log.info("Creating database columns")
     with sqlite3.connect(db) as con:
         c = con.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS `quotes` (
-                    	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
-                    	`quote`	TEXT NOT NULL,
-                    	`time`	TEXT NOT NULL,
-                        `author`    TEXT NOT NULL,
-                        `author_id`    INTEGER NOT NULL
+                    `id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+                    `quote`	TEXT NOT NULL,
+                    `time`	TEXT NOT NULL,
+                    `author`    TEXT NOT NULL,
+                    `author_id`    INTEGER NOT NULL
                     );''')
         c.execute('''CREATE TABLE IF NOT EXISTS `stats` (
-                    	`author`	TEXT NOT NULL,
-                    	`month_num`	INTEGER NOT NULL,
-                    	`day_num`	INTEGER NOT NULL,
-                        `day_week`	INTEGER NOT NULL,
-                        `year`	INTEGER NOT NULL,
-                        `hour`	INTEGER NOT NULL
+                    `author`	TEXT NOT NULL,
+                    `month_num`	INTEGER NOT NULL,
+                    `day_num`	INTEGER NOT NULL,
+                    `day_week`	INTEGER NOT NULL,
+                    `year`	INTEGER NOT NULL,
+                    `hour`	INTEGER NOT NULL
                     );''')
         con.commit()
         c.close()
+
 
 bot.run(TOKEN)

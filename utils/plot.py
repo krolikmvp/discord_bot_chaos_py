@@ -1,7 +1,6 @@
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import sys
+matplotlib.use('Agg')
 
 
 # Class responsible for creating messages stats plots
@@ -16,7 +15,7 @@ class StatPlot:
         self.plot_default_name = plot_file_name
 
     def plot_day_stats(self):
-        self.suffix =':00'
+        self.suffix = ':00'
         self.x_label = 'Hour'
         return self._create_plot()
 
@@ -33,7 +32,7 @@ class StatPlot:
         ys = [int(y) for y in self.graph_dict.values()]
 
         fig, ax = plt.subplots()
-        ax.bar(xs,ys)
+        ax.bar(xs, ys)
         ax.set_ylabel(self.y_label)
         ax.set_xlabel(self.x_label)
 

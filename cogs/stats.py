@@ -1,6 +1,3 @@
-import os
-import asyncio
-import aiohttp
 import discord
 from discord.ext import commands
 from utils.load_config import DATABASE_NAME
@@ -9,6 +6,7 @@ import datetime
 import logging
 import sqlite3
 import calendar
+
 
 class Stats(commands.Cog):
     def __init__(self, bot):
@@ -37,7 +35,7 @@ class Stats(commands.Cog):
             c.close()
 
         graph_dict = dict()
-        for i in range(0,24):
+        for i in range(0, 24):
             index = str(i)
             graph_dict[index] = graph_dict.get(index, 0)
             if index in hours:
@@ -49,7 +47,6 @@ class Stats(commands.Cog):
 
         plot = StatPlot(graph_dict)
         await message.send(file=discord.File(plot.plot_day_stats()))
-
 
     @commands.command(pass_context=True, help="Creates a chart of this months messages")
     async def stats_month(self, message):
@@ -85,7 +82,6 @@ class Stats(commands.Cog):
         plot = StatPlot(graph_dict)
         await message.send(file=discord.File(plot.plot_month_stats()))
 
-
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
@@ -99,7 +95,8 @@ class Stats(commands.Cog):
 
             with sqlite3.connect(DATABASE_NAME) as con:
                 c = con.cursor()
-                c.execute('INSERT INTO "stats" ("author" , "month_num" , "day_num" , "day_week" , "year" , "hour") VALUES (?, ?, ?, ?, ?, ?)', (message.author.name, month_num, day_num, day_week, year, hour))
+                c.execute('INSERT INTO "stats" ("author" , "month_num" , "day_num" , "day_week" , "year" , "hour") '
+                          'VALUES (?, ?, ?, ?, ?, ?)', (message.author.name, month_num, day_num, day_week, year, hour))
                 con.commit()
                 c.close()
 

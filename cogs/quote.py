@@ -1,7 +1,3 @@
-import os
-import asyncio
-import aiohttp
-import discord
 from discord.ext import commands
 from discord import Embed
 import logging
@@ -15,7 +11,7 @@ class Quote(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.forbidden_characters = ['<@', 'http', 'www']
-        self.start_commands = ['pls','<:', COMMANDS_PREFIX]
+        self.start_commands = ['pls', '<:', COMMANDS_PREFIX]
         self.quotes_dump_filename = 'quotes_dump.txt'
         self.minimum_message_length = 5
         self.maximum_message_length = 256
@@ -23,24 +19,23 @@ class Quote(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author.name in QUOTE_AUTHORS_NAMES and ( self.maximum_message_length > len(message.content) > self.minimum_message_length):
+        if message.author.name in QUOTE_AUTHORS_NAMES and \
+                (self.maximum_message_length > len(message.content) > self.minimum_message_length):
             date = datetime.datetime.now()
             quote_date = date.strftime("%c")
             weekday = int(date.strftime("%w"))
             hour = date.hour
-            #TODO CHANGE
-            # day_range = range(1,6)
-            # hour_range = range(7,16)
-            day_range = range(0,9)
-            hour_range = range(0,88)
+            day_range = range(1, 6)
+            hour_range = range(7, 16)
 
             # 0 is Sunday 6 is Saturday
             # check if message is sent between Monday and Friday and hour is 7-15
             if weekday in day_range and hour in hour_range:
-                if not any ( characters in message.content for characters in self.forbidden_characters):
-                    if not any (message.content.startswith(characters) for characters in self.start_commands):
+                if not any(characters in message.content for characters in self.forbidden_characters):
+                    if not any(message.content.startswith(characters) for characters in self.start_commands):
                         self.insert_quote(message.content, quote_date, str(message.author.name))
-                        self.logging.info("Quote added. Author: {}, time: {}, quote char length: {}".format(message.author, quote_date, len(message.content)))
+                        self.logging.info("Quote added. Author: {}, time: {}, quote char length: {}".format(
+                            message.author, quote_date, len(message.content)))
 
     @commands.command(name=RANDOM_QUOTE_CUSTOM_NAME, help="Random quote from a random member (specified in config)")
     async def random_quote(self, message):
@@ -63,26 +58,27 @@ class Quote(commands.Cog):
         quote_author = quote[3]
 
         embed = Embed(
-            colour = 12331223,
-            title = '#' + str(quote_id)
+            colour=12331223,
+            title='#' + str(quote_id)
         )
-        embed.add_field(name=quote_content,value=quote_date)
+        embed.add_field(name=quote_content, value=quote_date)
         embed.set_footer(text=quote_author)
 
         await message.send(embed=embed)
 
-    @commands.command(pass_context=True, help="Dumps all of the quotes of provided user from database to user_quotes_dump.txt file")
+    @commands.command(pass_context=True,
+                      help="Dumps all of the quotes of provided user from database to user_quotes_dump.txt file")
     async def log_quotes(self, ctx, arg):
         if str(ctx.message.author.id) == OWNER_ID:
             self.logging.info(f"Quotes dump process starts for user {arg}")
             with sqlite3.connect(DATABASE_NAME) as con:
                 c = con.cursor()
-                querry = c.execute('SELECT * FROM quotes WHERE author=?',[arg])
+                querry = c.execute('SELECT * FROM quotes WHERE author=?', [arg])
                 rowcount = len(querry.fetchall())
                 self.logging.debug(f"Rows count for user {arg}: {rowcount}")
                 if rowcount:
                     with open(arg + '_' + self.quotes_dump_filename, "w+") as quote:
-                        for row in c.execute('SELECT * FROM quotes WHERE author=?',[arg]):
+                        for row in c.execute('SELECT * FROM quotes WHERE author=?', [arg]):
                             try:
                                 line = "".join(str(row)[1:-1])+'\n'
                                 self.logging.debug(f"Line to write: {line}")
@@ -100,11 +96,11 @@ class Quote(commands.Cog):
             self.logging.warning(f"{ctx.message.author} tried to use owner only function")
 
     def insert_quote(self, quote, time, author):
-            with sqlite3.connect(DATABASE_NAME) as con:
-                c = con.cursor()
-                c.execute('INSERT INTO "quotes" ("quote","time","author") VALUES (?, ?, ?)', (quote, time, author))
-                con.commit()
-                c.close()
+        with sqlite3.connect(DATABASE_NAME) as con:
+            c = con.cursor()
+            c.execute('INSERT INTO "quotes" ("quote","time","author") VALUES (?, ?, ?)', (quote, time, author))
+            con.commit()
+            c.close()
 
 
 def setup(bot):
