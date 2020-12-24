@@ -29,18 +29,19 @@ chaos_log = logging.getLogger('chaos_logger')
 chaos_log.setLevel(log_level)
 chaos_log.addHandler(my_handler)
 
+# Load all cogs
+for cog in cogs:
+    try:
+        bot.load_extension(cog)
+    except Exception as ex:
+        print(f'Could not load cog {cog}')
+        chaos_log.error(f'Could not load cog {cog}')
+
 
 @bot.event
 async def on_ready():
-    # Load all cogs
-    for cog in cogs:
-        try:
-            bot.load_extension(cog)
-        except Exception as ex:
-            print(f'Could not load cog {cog}')
-            chaos_log.error(f'Could not load cog {cog}')
     # List all servers where the bot is present 
-    f'{bot.user} is connected to the following guilds:\n'
+    print(f'{bot.user} is connected to the following guilds:\n')
     for guild in bot.guilds:
         print("Guild:")
         print(f'{guild.name}(id: {guild.id})')
@@ -83,6 +84,16 @@ def setup_database(db):
                     `day_week`	INTEGER NOT NULL,
                     `year`	INTEGER NOT NULL,
                     `hour`	INTEGER NOT NULL
+                    );''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `warframe` (
+                    `author`	TEXT NOT NULL,
+                    `channel_id`	INTEGER PRIMARY KEY NOT NULL,
+                    `date`	TEXT NOT NULL,
+                    `guild_name`	TEXT NOT NULL
+                    );''')
+        #c.execute('''DROP TABLE  `warframe_events`''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `warframe_events` (
+                    `event_id`	TEXT PRIMARY KEY NOT NULL
                     );''')
         con.commit()
         c.close()

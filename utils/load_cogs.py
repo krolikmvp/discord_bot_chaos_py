@@ -4,5 +4,7 @@
 cogs = [
     'cogs.quote',
     'cogs.stats',
-    'cogs.random'
+    'cogs.random',
+    'cogs.warframe',
+    'cogs.register'
 ]
