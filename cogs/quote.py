@@ -88,7 +88,7 @@ class Quote(commands.Cog):
                         else:
                             await ctx.send(f"{arg} quotes dumped to file")
                 else:
-                    await ctx.send(f"Quotes from user {arg} not found")qgi
+                    await ctx.send(f"Quotes from user {arg} not found")
 
                 c.close()
             self.logging.info("Quotes dump process ended")
