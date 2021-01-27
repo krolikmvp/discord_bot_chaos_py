@@ -33,7 +33,7 @@ class Quote(commands.Cog):
             if weekday in day_range and hour in hour_range:
                 if not any(characters in message.content for characters in self.forbidden_characters):
                     if not any(message.content.startswith(characters) for characters in self.start_commands):
-                        self.insert_quote(message.content, quote_date, str(message.author.name))
+                        self.insert_quote(message.content, quote_date, str(message.author.name), int(message.author.id))
                         self.logging.info("Quote added. Author: {}, time: {}, quote char length: {}".format(
                             message.author, quote_date, len(message.content)))
 
@@ -88,17 +88,18 @@ class Quote(commands.Cog):
                         else:
                             await ctx.send(f"{arg} quotes dumped to file")
                 else:
-                    await ctx.send(f"Quotes from user {arg} not found")
+                    await ctx.send(f"Quotes from user {arg} not found")qgi
 
                 c.close()
             self.logging.info("Quotes dump process ended")
         else:
             self.logging.warning(f"{ctx.message.author} tried to use owner only function")
 
-    def insert_quote(self, quote, time, author):
+    def insert_quote(self, quote, time, author, author_id):
         with sqlite3.connect(DATABASE_NAME) as con:
             c = con.cursor()
-            c.execute('INSERT INTO "quotes" ("quote","time","author") VALUES (?, ?, ?)', (quote, time, author))
+            c.execute('INSERT INTO "quotes" ("quote","time","author","author_id") VALUES (?, ?, ?)', (quote, time,
+                                                                                                      author, author_id))
             con.commit()
             c.close()
 

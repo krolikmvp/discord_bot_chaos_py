@@ -18,6 +18,7 @@ class Warframe(commands.Cog):
         self.loaded_events = []
         self.new_events = []
         self.registered_channels = []
+        self.notified_channels = []
 
     @commands.Cog.listener()
     async def on_ready(self):

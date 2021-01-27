@@ -95,6 +95,13 @@ def setup_database(db):
         c.execute('''CREATE TABLE IF NOT EXISTS `warframe_events` (
                     `event_id`	TEXT PRIMARY KEY NOT NULL
                     );''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `warframe_notify_channel` (
+                    `channel_id`	INTEGER NOT NULL,
+                    `notified`      INTEGER NOT NULL,
+                    FOREIGN KEY (channel_id) REFERENCES `warframe` (channel_id)
+                        ON UPDATE CASCADE
+                        ON DELETE CASCADE
+                    );''')
         con.commit()
         c.close()
 
