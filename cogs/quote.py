@@ -98,8 +98,9 @@ class Quote(commands.Cog):
     def insert_quote(self, quote, time, author, author_id):
         with sqlite3.connect(DATABASE_NAME) as con:
             c = con.cursor()
-            c.execute('INSERT INTO "quotes" ("quote","time","author","author_id") VALUES (?, ?, ?)', (quote, time,
-                                                                                                      author, author_id))
+            c.execute('INSERT INTO "quotes" ("quote","time","author","author_id") VALUES (?, ?, ?, ?)', (quote, time,
+                                                                                                         author,
+                                                                                                         author_id))
             con.commit()
             c.close()
 
