@@ -23,10 +23,10 @@ class Warframe(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.load_events()
-        await self.update_channels()
-        await self.get_events()
         while True:
             if len(self.new_events) > 0:
+                await self.update_channels()
+                await self.get_events()
                 await self.send_events_all_channels()
                 await self.update_events()
             await asyncio.sleep(10)

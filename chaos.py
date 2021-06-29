@@ -21,8 +21,7 @@ bot = commands.Bot(command_prefix=COMMANDS_PREFIX, intents=intents)
 log_level = logging.INFO if not args.debug else logging.DEBUG
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(line: %(lineno)d) %(message)s')
 logFile = 'logfile.log'
-my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
-                                 backupCount=2, encoding=None, delay=0)
+my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
 my_handler.setFormatter(log_formatter)
 my_handler.setLevel(log_level)
 chaos_log = logging.getLogger('chaos_logger')
