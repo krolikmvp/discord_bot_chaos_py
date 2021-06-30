@@ -37,9 +37,10 @@ class Quote(commands.Cog):
                         self.logging.info("Quote added. Author: {}, time: {}, quote char length: {}".format(
                             message.author, quote_date, len(message.content)))
 
-    @commands.command(name=RANDOM_QUOTE_CUSTOM_NAME, help="Random quote from a random member (specified in config)")
-    async def random_quote(self, message):
-        self.logging.info(f"Random quote requested by {message.author.name}")
+    @commands.command(name=RANDOM_QUOTE_CUSTOM_NAME, help="Random quote from a random member (specified in config)",
+                      pass_context=True)
+    async def random_quote(self, ctx):
+        self.logging.info(f"Random quote requested by {ctx.author.name}")
         author = random.choice(QUOTE_AUTHORS_NAMES)
         quote = None
         try:
@@ -50,7 +51,7 @@ class Quote(commands.Cog):
         except Exception as ex:
             self.logging.error(f"Error wile getting quote from the database: {ex}")
             self.logging.error(f"Quote author {author}, Quote tuple{quote}")
-            await message.send("Error when trying to get a random quote. Please try again later")
+            await ctx.send("Error when trying to get a random quote. Please try again later")
 
         quote_id = quote[0]
         quote_content = quote[1]
@@ -64,7 +65,8 @@ class Quote(commands.Cog):
         embed.add_field(name=quote_content, value=quote_date)
         embed.set_footer(text=quote_author)
 
-        await message.send(embed=embed)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     @commands.command(pass_context=True,
                       help="Dumps all of the quotes of provided user from database to user_quotes_dump.txt file")

@@ -30,6 +30,7 @@ class Warframe(commands.Cog):
 
     @commands.command(name="warframe_events", help="Shows active events in Warframe")
     async def post_events(self, message):
+        await self.update_channels()
         if message.channel.id in self.registered_channels:
             await self.send_events(message.channel)
         else:
