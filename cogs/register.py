@@ -4,11 +4,6 @@ import sqlite3
 import datetime
 from utils.load_config import DATABASE_NAME
 
-ERROR_NOT_ENOUGH_ARGUMENTS = 1
-ERROR_INVALID_ARGUMENTS_NUMBER = 2
-
-UNREGISTER_ERRORS = {ERROR_NOT_ENOUGH_ARGUMENTS,ERROR_INVALID_ARGUMENTS_NUMBER}
-
 
 class Register(commands.Cog):
     def __init__(self, bot):
@@ -92,7 +87,6 @@ class Register(commands.Cog):
     async def _unregister_querry(self, *args):
         querry_prefix = f'DELETE from '
         args_len = len(args)
-        args_pairs = 0
         args_add = 3
         if args_len <= 2:
             raise RuntimeError("Not enough arguments")
