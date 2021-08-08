@@ -84,6 +84,7 @@ def setup_database(db):
                     `year`	INTEGER NOT NULL,
                     `hour`	INTEGER NOT NULL
                     );''')
+        # c.execute('''DROP TABLE  `warframe`''')
         c.execute('''CREATE TABLE IF NOT EXISTS `warframe` (
                     `author`	TEXT NOT NULL,
                     `channel_id`	INTEGER PRIMARY KEY NOT NULL,
@@ -101,10 +102,12 @@ def setup_database(db):
                         ON UPDATE CASCADE
                         ON DELETE CASCADE
                     );''')
+        # c.execute('''DROP TABLE  `insult`''')
         c.execute('''CREATE TABLE IF NOT EXISTS `insult` (
                     `id`	INTEGER PRIMARY KEY AUTOINCREMENT,
                     `channel_id`	INTEGER NOT NULL,
                     `target_id`	INTEGER NOT NULL,
+                    `insulted_day`	INTEGER NOT NULL,
                     UNIQUE(channel_id, target_id)
                     );''')
         con.commit()

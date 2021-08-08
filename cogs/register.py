@@ -38,12 +38,13 @@ class Register(commands.Cog):
 
                 if mention:
                     await ctx.send(f"Great, now I will be very mean to <@{mention}>")
-                #     # Registers insult for the specific user on the specific channel
-                #     querry = f'INSERT INTO "insult" ("channel_id","target_id",) VALUES (' \
-                #              f'"{ctx.message.channel.id}", ' \
-                #              f'"{mention}")'
-                #
-                #     await ctx.send(await self._register_item(querry))
+                    # Registers insult for the specific user on the specific channel
+                    querry = f'INSERT INTO "insult" ("channel_id","target_id","insulted_day") VALUES (' \
+                             f'"{ctx.message.channel.id}", ' \
+                             f'"{mention}", ' \
+                             f'"{0}")'
+                    self.logging.debug(querry)
+                    await ctx.send(await self._register_item(querry))
         else:
             await ctx.send("Not enough permissions, only Admin can register a channel")
 

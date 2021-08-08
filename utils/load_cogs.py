@@ -6,5 +6,6 @@ cogs = [
     'cogs.stats',
     'cogs.random',
     'cogs.warframe',
-    'cogs.register'
+    'cogs.register',
+    'cogs.insult'
 ]
