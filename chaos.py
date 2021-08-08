@@ -90,7 +90,7 @@ def setup_database(db):
                     `date`	TEXT NOT NULL,
                     `guild_name`	TEXT NOT NULL
                     );''')
-        #c.execute('''DROP TABLE  `warframe_events`''')
+        # c.execute('''DROP TABLE  `warframe_events`''')
         c.execute('''CREATE TABLE IF NOT EXISTS `warframe_events` (
                     `event_id`	TEXT PRIMARY KEY NOT NULL
                     );''')
@@ -100,6 +100,12 @@ def setup_database(db):
                     FOREIGN KEY (channel_id) REFERENCES `warframe` (channel_id)
                         ON UPDATE CASCADE
                         ON DELETE CASCADE
+                    );''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `insult` (
+                    `id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+                    `channel_id`	INTEGER NOT NULL,
+                    `target_id`	INTEGER NOT NULL,
+                    UNIQUE(channel_id, target_id)
                     );''')
         con.commit()
         c.close()
