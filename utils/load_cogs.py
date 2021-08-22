@@ -7,5 +7,6 @@ cogs = [
     'cogs.random',
     'cogs.warframe',
     'cogs.register',
-    'cogs.insult'
+    'cogs.insult',
+    'cogs.bdo_reminder'
 ]

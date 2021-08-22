@@ -25,6 +25,12 @@ class Register(commands.Cog):
 
                 await ctx.send(await self._register_item(querry))
 
+            if arg == "bdo_reminder":
+                # Registers channel for the Warframe event notifications
+                querry = f'INSERT INTO "bdo_remind_channel" ("channel_id") VALUES ('f'{ctx.message.channel.id})'
+
+                await ctx.send(await self._register_item(querry))
+
             if arg.startswith("insult"):
 
                 mention = None

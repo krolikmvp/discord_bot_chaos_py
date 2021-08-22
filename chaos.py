@@ -110,6 +110,16 @@ def setup_database(db):
                     `insulted_day`	INTEGER NOT NULL,
                     UNIQUE(channel_id, target_id)
                     );''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `bdo_remind_channel` (
+                    `channel_id`	INTEGER PRIMARY KEY
+                    );''')
+        c.execute('''CREATE TABLE IF NOT EXISTS `bdo_remind_user` (
+                    `channel_id`	INTEGER PRIMARY KEY,
+                    `author`	TEXT NOT NULL,
+                    `hour`	INTEGER NOT NULL,
+                    `active`	INTEGER NOT NULL,
+                    UNIQUE(channel_id, author)
+                    );''')
         con.commit()
         c.close()
 
