@@ -35,8 +35,7 @@ class BdoReminder(commands.Cog):
             if date.minute == DELIVERY_MINUTE:
                 registered_channels = self._get_all_channels()
                 for channel in registered_channels:
-                    print(channel)
-                    #await self._remind(channel)
+                    await self._remind(channel)
         if args.debug:
             registered_channels = self._get_all_channels()
             for channel in registered_channels:
