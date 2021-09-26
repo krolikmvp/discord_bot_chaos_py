@@ -33,14 +33,7 @@ class Register(commands.Cog):
 
             if arg.startswith("insult"):
 
-                mention = None
-                print(ctx.message.mentions)
-                try:
-                    mention = ctx.message.mentions[0].id
-                except IndexError as ex:
-                    await ctx.send(f"Something went wrong. Message format may be incorrect. "
-                                   f"You have to mention someone!")
-                    self.logging.error(f"Error when adding insult: {ex}. Mentions: {ctx.message.mentions}")
+                mention = await self.__get_mention(ctx)
 
                 if mention:
                     await ctx.send(f"Great, now I will be very mean to <@{mention}>")
@@ -65,7 +58,8 @@ class Register(commands.Cog):
                     message = await self._unregister_channel('warframe', ctx.message.channel.id)
                     await ctx.send(message)
                 elif arg[0] == "insult":
-                    message = await self._unregister_item('insult', ctx.message.channel.id)
+                    mention = await self.__get_mention(ctx)
+                    message = await self._unregister_item('insult', 'target_id', mention)
                     await ctx.send(message)
                 else:
                     await ctx.send("Unknown item to unregister")
@@ -92,6 +86,7 @@ class Register(commands.Cog):
         return response
 
     async def _unregister_querry(self, *args):
+        print(args)
         querry_prefix = f'DELETE from '
         args_len = len(args)
         args_add = 3
@@ -112,7 +107,7 @@ class Register(commands.Cog):
     async def _unregister_item(self, *args):
 
         try:
-            querry = self._unregister_querry(*args)
+            querry = await self._unregister_querry(*args)
         except RuntimeError as re:
             return re
 
@@ -123,10 +118,10 @@ class Register(commands.Cog):
                 con.commit()
                 c.close()
         except Exception as exc:
-            response = "Unable to remove channel from the database. Unknown error"
-            logging.error(f"Unable to remove channel from the database. {exc}")
+            response = f"Unable to remove item from the database. {exc}"
+            logging.error(f"Unable to remove item from the database. {exc}")
         else:
-            response = "Channel successfully unregistered"
+            response = "Item successfully unregistered"
         return response
 
     async def _unregister_channel(self, table_name, channel_id):
@@ -142,6 +137,18 @@ class Register(commands.Cog):
         else:
             response = "Channel successfully unregistered"
         return response
+
+    async def __get_mention(self, ctx):
+
+        mention = None
+        try:
+            mention = ctx.message.mentions[0].id
+        except IndexError as ex:
+            await ctx.send(f"Something went wrong. Message format may be incorrect. "
+                           f"You have to mention someone!")
+            self.logging.error(f"Error when getting mention: {ex}. Mentions: {ctx.message.mentions}")
+
+        return mention
 
 
 def setup(bot):

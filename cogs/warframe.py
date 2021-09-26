@@ -66,10 +66,13 @@ class Warframe(commands.Cog):
                         print(f"Event {event_id}")
                         if event_id not in self.active_events.keys():
                             event_params = dict()
-                            event_params["description"] = event["description"]
-                            event_params["node"] = event["node"]
-                            event_params["rewards"] = [r["itemString"] for r in event["rewards"] if
-                                                       len(r["itemString"]) > 1]
+                            event_params["description"] = event.get("description", "None")
+                            event_params["node"] = event.get("node", "None")
+                            rewards = [r["itemString"] for r in event["rewards"] if len(r["itemString"]) > 1]
+                            if not len(rewards):
+                                rewards = [r["rewardPool"] for r in event["jobs"]]
+                                rewards = rewards[0]
+                            event_params["rewards"] = rewards
                             event_params["expired"] = event["expired"]
                             event_params["expiry"] = event["expiry"]
                             event_params["new"] = False
